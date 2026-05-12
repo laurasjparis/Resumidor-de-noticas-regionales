@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database.connection import init_db
 from app.routes import noticias, rss
+from app.rss.scheduler import iniciar_scheduler
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
@@ -34,6 +35,7 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     init_db()
+    iniciar_scheduler(intervalo_horas=12)
 
 
 app.include_router(noticias.router)
