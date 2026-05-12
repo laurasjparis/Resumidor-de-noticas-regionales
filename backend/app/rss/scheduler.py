@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from app.database.connection import SessionLocal
 from app.models.noticia import Noticia
 from app.rss.fuentes import FUENTES_RSS
-from app.rss.parser import procesar_feed
+from app.rss.parser import procesar_feed, obtener_contenido_completo
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +23,8 @@ def ejecutar_actualizacion():
         for fuente in FUENTES_RSS:
             for datos in procesar_feed(fuente):
                 try:
+                    if not datos["contenido"]:
+                        datos["contenido"] = obtener_contenido_completo(datos["url"])
                     db.add(Noticia(**datos))
                     db.commit()
                     nuevas += 1

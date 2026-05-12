@@ -42,19 +42,29 @@ def parsear_fecha(entry: feedparser.FeedParserDict) -> Optional[datetime]:
 
 def obtener_contenido_completo(url: str) -> str:
     """
-    Descarga la página y extrae el texto principal del artículo.
-    Usa BeautifulSoup como fallback ligero; newspaper3k es opcional.
+    Extrae el texto principal del artículo.
+    Intenta primero con newspaper4k (mejor precisión); si falla, usa BeautifulSoup.
     """
+    # Intento 1: newspaper4k
+    try:
+        from newspaper import Article
+        article = Article(url, language="es")
+        article.download()
+        article.parse()
+        if article.text and len(article.text) > 100:
+            return limpiar_texto(article.text)
+    except Exception as exc:
+        logger.debug("newspaper4k no pudo extraer %s: %s", url, exc)
+
+    # Intento 2: BeautifulSoup como fallback
     try:
         resp = requests.get(url, headers=HEADERS, timeout=settings.HTTP_TIMEOUT)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
 
-        # Eliminar scripts, estilos y nav para no contaminar el texto
         for tag in soup(["script", "style", "nav", "footer", "header", "aside"]):
             tag.decompose()
 
-        # Buscar el contenedor de artículo más probable
         for selector in ("article", '[class*="article"]', '[class*="content"]', "main"):
             contenedor = soup.select_one(selector)
             if contenedor:
