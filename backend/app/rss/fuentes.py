@@ -53,3 +53,16 @@ PALABRAS_ORDEN_PUBLICO = [
     "pandilla", "banda criminal", "clan",
     "orden público", "convivencia",
 ]
+
+MUNICIPIOS_VALLE_ABURRA = [
+    "medellín", "medellin", "bello", "itagüí", "itagui", "envigado",
+    "sabaneta", "la estrella", "caldas", "copacabana", "girardota", "barbosa",
+]
+
+COMUNAS_Y_BARRIOS_MEDELLIN = [
+    "comuna 1", "comuna 2", "comuna 3", "comuna 4", "comuna 5", "comuna 6",
+    "comuna 7", "comuna 8", "comuna 9", "comuna 10", "comuna 11", "comuna 12",
+    "comuna 13", "comuna 14", "comuna 15", "comuna 16",
+    "laureles", "robledo", "manrique", "belén", "belen", "castilla",
+    "aranjuez", "guayabal", "boston", "prado", "el poblado",
+]
