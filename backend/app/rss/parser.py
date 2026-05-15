@@ -8,7 +8,12 @@ import requests
 from bs4 import BeautifulSoup
 
 from app.config import settings
-from app.rss.limpieza import limpiar_html, limpiar_texto, clasificar_categoria
+from app.rss.limpieza import (
+    clasificar_categoria,
+    es_noticia_relevante_region,
+    limpiar_html,
+    limpiar_texto,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +113,10 @@ def procesar_feed(fuente: dict) -> list[dict]:
             descripcion = limpiar_html(
                 entry.get("summary") or entry.get("description", "")
             )
+            if not es_noticia_relevante_region(titulo, descripcion):
+                logger.debug("Noticia descartada por no ser de Medellín/Valle: %s", titulo)
+                continue
+
             fecha = parsear_fecha(entry)
             categoria = clasificar_categoria(titulo, descripcion, categoria_base)
 
