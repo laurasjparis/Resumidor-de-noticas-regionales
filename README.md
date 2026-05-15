@@ -1,6 +1,6 @@
-# Resumidor de Noticias Regionales — Módulo 1: Ingestión RSS
+# Resumidor de Noticias Regionales — RSS + Geolocalización
 
-Backend en **FastAPI** para captura, normalización y almacenamiento de noticias regionales colombianas desde feeds RSS.
+Backend en **FastAPI** para captura, normalización, almacenamiento y geolocalización de noticias regionales centradas en **Medellín** y el **Valle de Aburrá**.
 
 ---
 
@@ -13,18 +13,27 @@ backend/
 │   ├── config.py          # Variables de entorno (pydantic-settings)
 │   ├── database/
 │   │   └── connection.py  # Engine SQLAlchemy y sesión
+│   ├── geoloc/
+│   │   ├── extractor.py   # Detección híbrida de lugares
+│   │   ├── geocoder.py    # Geocoding con caché local
+│   │   ├── normalizer.py  # Normalización de municipios/barrios/comunas
+│   │   └── service.py     # Orquestación de geolocalización
 │   ├── models/
 │   │   ├── noticia.py     # Modelo ORM
+│   │   ├── ubicacion.py   # Modelos ORM de ubicaciones y caché
 │   │   └── schemas.py     # Schemas Pydantic (request/response)
 │   ├── rss/
 │   │   ├── fuentes.py     # Catálogo de feeds RSS y palabras clave
-│   │   ├── parser.py      # Parseo feedparser + extracción de contenido
-│   │   └── limpieza.py    # Limpieza HTML y clasificación automática
+│   │   ├── parser.py      # Parseo feedparser + filtro regional
+│   │   └── limpieza.py    # Limpieza HTML, clasificación y relevancia regional
 │   └── routes/
 │       ├── noticias.py    # GET /noticias, GET /noticias/{id}
-│       └── rss.py         # POST /rss/actualizar
+│       ├── rss.py         # POST /rss/actualizar
+│       └── geoloc.py      # Endpoints de geolocalización
+├── alembic/               # Migraciones de base de datos
 └── tests/
-    └── test_rss.py        # Pruebas unitarias
+    ├── test_rss.py
+    └── test_geoloc.py
 ```
 
 ---
@@ -66,9 +75,14 @@ La documentación interactiva queda disponible en:
 |--------|------|-------------|
 | `GET` | `/` | Health check |
 | `GET` | `/health` | Health check JSON |
-| `GET` | `/noticias` | Listar noticias (paginación, filtros por fuente y categoría) |
+| `GET` | `/noticias` | Listar noticias regionales guardadas |
 | `GET` | `/noticias/{id}` | Obtener noticia por ID |
-| `POST` | `/rss/actualizar` | Disparar ingestión de todos los feeds RSS |
+| `POST` | `/rss/actualizar` | Ingerir feeds RSS y filtrar solo contenido regional |
+| `POST` | `/geoloc/procesar` | Geolocalizar noticias pendientes |
+| `POST` | `/geoloc/procesar/{id}` | Geolocalizar una noticia puntual |
+| `GET` | `/geoloc/noticias/{id}` | Ver ubicaciones detectadas para una noticia |
+| `GET` | `/geoloc/eventos` | Listar eventos geográficos con detalle completo |
+| `GET` | `/geoloc/mapa` | Payload compacto para frontend de mapa |
 
 ### Parámetros de `/noticias`
 
@@ -105,6 +119,12 @@ La documentación interactiva queda disponible en:
 
 ---
 
+## Flujo backend
+
+```text
+RSS -> filtro regional Medellín/Valle -> tabla noticias -> geolocalización -> ubicaciones_noticia -> endpoints /geoloc/eventos y /geoloc/mapa
+```
+
 ## Base de datos
 
 Por defecto usa **SQLite** (`noticias.db` en la raíz de `backend/`).
@@ -114,7 +134,11 @@ Para producción, cambiar `DATABASE_URL` en `.env`:
 DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/noticias_db
 ```
 
-La tabla se crea automáticamente al iniciar el servidor.
+El esquema se gestiona con **Alembic**.
+
+```bash
+alembic upgrade head
+```
 
 ---
 
@@ -142,8 +166,8 @@ pytest tests/ -v
 ## Integración con otros módulos
 
 - **NLP**: consumir `GET /noticias?categoria=orden_publico` para procesar texto de `descripcion` y `contenido`.
-- **Geolocalización**: idem, extraer topónimos de `titulo` + `contenido`.
-- **Frontend React**: consumir `GET /noticias` con paginación y filtros.
+- **Geolocalización**: consumir `GET /geoloc/noticias/{id}`, `GET /geoloc/eventos` o `GET /geoloc/mapa`.
+- **Frontend React**: consumir `GET /noticias` para listado y `GET /geoloc/mapa` para marcadores.
 
 ---
 
