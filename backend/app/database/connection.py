@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
+
 from app.config import settings
 
 engine = create_engine(
@@ -23,4 +23,4 @@ def get_db():
 
 def init_db():
     from app.models.noticia import Noticia  # noqa: F401 — registers model with Base
-    Base.metadata.create_all(bind=engine)
+    from app.models.ubicacion import CacheGeocoding, UbicacionNoticia  # noqa: F401
