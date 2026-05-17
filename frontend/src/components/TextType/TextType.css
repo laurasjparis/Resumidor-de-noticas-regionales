@@ -1,0 +1,20 @@
+.texttype-root {
+  display: inline;
+  white-space: pre;
+}
+
+.texttype-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #D4BCC9;
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  animation: tt-blink 1s step-end infinite;
+}
+
+@keyframes tt-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}

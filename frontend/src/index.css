@@ -1,0 +1,108 @@
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-deep: #F5F2EC;
+  --lilac: #C84B2F;
+  --ink: #1A1410;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #F5F2EC;
+  color: #1A1410;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #E2DDD4;
+}
+::-webkit-scrollbar-thumb {
+  background: #A89B8C;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C84B2F;
+}
+
+/* Leaflet popup dark theme */
+.leaflet-popup-content-wrapper {
+  background: #F5F2EC !important;
+  color: #1A1410 !important;
+  border: 1px solid #D5CFC4 !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-tip {
+  background: #F5F2EC !important;
+}
+
+.leaflet-popup-close-button {
+  color: #C84B2F !important;
+}
+
+.leaflet-container {
+  background: #F5F2EC !important;
+}
+
+/* Custom marker */
+.custom-marker {
+  width: 14px;
+  height: 14px;
+  background: #C84B2F;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  box-shadow: none;
+}
+
+/* TextType cursor */
+.texttype-cursor {
+  display: inline-block;
+  width: 2px;
+  background: #C84B2F;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Card hover glow */
+.card-hover {
+  transition: border-color 0.25s ease, transform 0.2s ease;
+}
+.card-hover:hover {
+  border-color: #C84B2F;
+  transform: translateY(-2px);
+}
+
+/* Badge */
+.badge {
+  @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+}
+
+/* Input focus */
+input:focus, select:focus {
+  outline: none;
+  border-color: #C84B2F !important;
+  box-shadow: none;
+}
