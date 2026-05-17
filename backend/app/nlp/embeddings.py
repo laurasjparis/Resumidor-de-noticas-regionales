@@ -29,13 +29,18 @@ def generar_embeddings(textos: list[str]) -> list[list[float]]:
 
 def texto_de_noticia(noticia) -> str:
     """
-    Combina título + descripción para crear el texto
-    que se convierte en vector. No usamos contenido completo
-    porque es muy largo y añade ruido.
+    Combina título + descripción + categoría para crear el texto
+    que se convierte en vector. La categoría ayuda a separar
+    noticias de temas distintos (orden_publico vs general).
     """
     partes = []
     if noticia.titulo:
+        # El título se repite para darle más peso en el vector
+        partes.append(noticia.titulo)
         partes.append(noticia.titulo)
     if noticia.descripcion:
         partes.append(noticia.descripcion)
+    if noticia.categoria:
+        etiqueta = noticia.categoria.replace("_", " ")
+        partes.append(f"Categoría: {etiqueta}")
     return " . ".join(partes)
