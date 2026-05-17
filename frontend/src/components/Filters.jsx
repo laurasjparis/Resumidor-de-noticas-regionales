@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const CATEGORIAS = ['Todas', 'Orden público', 'Convivencia', 'Drogas', 'Accidente', 'Protesta', 'Emergencia']
+const CATEGORIAS = ['Todas', 'Orden público', 'Convivencia', 'Drogas', 'Accidente', 'Protesta', 'Emergencia', 'General']
 
 export default function Filters({ eventos, onFilter }) {
   const [q,          setQ]          = useState('')

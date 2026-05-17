@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getEventos } from '../services/api'
+import { getEventosMapa } from '../services/api'
 import EventMap from '../components/EventMap'
 
 export default function MapPage() {
@@ -7,7 +7,7 @@ export default function MapPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getEventos().then(setEventos).finally(() => setLoading(false))
+    getEventosMapa().then(setEventos).finally(() => setLoading(false))
   }, [])
 
   return (
@@ -15,7 +15,7 @@ export default function MapPage() {
       <div className="mb-6">
         <h1 className="text-ink text-2xl font-bold">Mapa de casos</h1>
         <p className="text-ink-dim text-sm mt-1">
-          {loading ? 'Cargando casos...' : `${eventos.length} casos ubicados`}
+          {loading ? 'Cargando casos...' : `${eventos.length} casos con coordenadas`}
         </p>
       </div>
 

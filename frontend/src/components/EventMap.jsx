@@ -5,6 +5,26 @@ import 'leaflet/dist/leaflet.css'
 const COLOMBIA_CENTER = [4.5709, -74.2973]
 
 export default function EventMap({ eventos = [], height = '420px' }) {
+  const eventosConUbicacion = eventos.filter((e) =>
+    Number.isFinite(Number(e.lat)) && Number.isFinite(Number(e.lon))
+  )
+
+  if (eventosConUbicacion.length === 0) {
+    return (
+      <div
+        className="rounded-xl overflow-hidden border border-slate-border bg-slate-surface flex items-center justify-center text-center px-6"
+        style={{ height }}
+      >
+        <div>
+          <p className="text-ink font-semibold">Sin ubicaciones para mostrar</p>
+          <p className="text-ink-muted text-sm mt-1">
+            Las noticias actuales del backend no incluyen coordenadas.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="rounded-xl overflow-hidden border border-slate-border" style={{ height }}>
       <MapContainer
@@ -18,7 +38,7 @@ export default function EventMap({ eventos = [], height = '420px' }) {
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
 
-        {eventos.map((e, index) => (
+        {eventosConUbicacion.map((e, index) => (
           <CircleMarker
             key={e.evento_id}
             center={[e.lat, e.lon]}
