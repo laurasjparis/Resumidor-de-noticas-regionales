@@ -1,6 +1,6 @@
 # Resumidor de Noticias Regionales — Módulo 1: Ingestión RSS
 
-Backend en **FastAPI** para captura, normalización y almacenamiento de noticias regionales colombianas desde feeds RSS.
+Backend en **FastAPI** para captura, normalización y almacenamiento de noticias regionales colombianas desde feeds RSS. Incluye un frontend en **React/Vite** para consultar las noticias desde el navegador.
 
 ---
 
