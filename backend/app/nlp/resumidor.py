@@ -12,25 +12,28 @@ def generar_resumen(noticias_texto: list[str]) -> str:
     Recibe una lista de textos de noticias del mismo evento
     y genera un resumen usando Ollama (llama3.2).
     """
-    # Si es una sola noticia, el prompt es más simple
+    instrucciones = """INSTRUCCIONES ESTRICTAS:
+- Resume en 2-3 oraciones en español.
+- SOLO usa información que aparece explícitamente en el texto.
+- NUNCA inventes fechas, nombres, edades o lugares que no estén en el texto.
+- Si no sabes un dato, simplemente no lo menciones.
+- Menciona: qué pasó y dónde ocurrió.
+- Responde SOLO con el resumen, nada más."""
+
     if len(noticias_texto) == 1:
-        prompt = f"""Resume la siguiente noticia en 2-3 oraciones en español. 
-Sé conciso y objetivo. Solo devuelve el resumen, sin explicaciones adicionales.
+        prompt = f"""{instrucciones}
 
 Noticia:
-{noticias_texto[0][:1500]}
+{noticias_texto[0][:2000]}
 
 Resumen:"""
     else:
         noticias_unidas = ""
         for i, texto in enumerate(noticias_texto, 1):
-            # Limitar cada noticia a 1000 chars para no saturar el contexto
-            noticias_unidas += f"\n--- Noticia {i} ---\n{texto[:1000]}\n"
+            noticias_unidas += f"\n--- Noticia {i} ---\n{texto[:1200]}\n"
 
-        prompt = f"""Las siguientes {len(noticias_texto)} noticias hablan del mismo evento. 
-Genera UN SOLO resumen unificado de 2-3 oraciones en español.
-Sé conciso, objetivo y menciona los datos clave (qué pasó, dónde, cuándo).
-Solo devuelve el resumen, sin explicaciones adicionales.
+        prompt = f"""{instrucciones}
+Estas {len(noticias_texto)} noticias hablan del mismo evento. Genera UN resumen unificado.
 
 {noticias_unidas}
 
@@ -44,7 +47,7 @@ Resumen unificado:"""
                 "prompt": prompt,
                 "stream": False,
                 "options": {
-                    "temperature": 0.3,
+                    "temperature": 0.1,
                     "num_predict": 200,
                 }
             },
