@@ -8,6 +8,7 @@ from app.config import settings
 from app.database.connection import init_db
 from app.routes import geoloc, noticias, rss
 from app.rss.scheduler import iniciar_scheduler
+from app.routes import eventos
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
@@ -44,6 +45,7 @@ app.add_middleware(
 app.include_router(noticias.router)
 app.include_router(rss.router)
 app.include_router(geoloc.router)
+app.include_router(eventos.router)
 
 
 @app.get("/", tags=["health"])
