@@ -22,5 +22,7 @@ def get_db():
 
 
 def init_db():
-    from app.models.noticia import Noticia  # noqa: F401 — registers model with Base
+    from app.models.noticia import Noticia  # noqa: F401
     from app.models.ubicacion import CacheGeocoding, UbicacionNoticia  # noqa: F401
+    from app.models.evento import Evento, EventoNoticia  # noqa: F401
+    Base.metadata.create_all(bind=engine)
