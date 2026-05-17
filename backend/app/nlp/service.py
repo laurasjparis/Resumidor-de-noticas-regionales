@@ -8,6 +8,7 @@ from app.nlp.clustering import agrupar_noticias, obtener_similitudes
 from app.nlp.resumidor import generar_resumen
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -41,7 +42,8 @@ def procesar_eventos(db: Session, umbral: float = 0.55) -> dict:
     embeddings = generar_embeddings(textos)
 
     # 3. Agrupar
-    grupos = agrupar_noticias(embeddings, umbral=umbral)
+    fechas = [n.fecha for n in noticias]
+    grupos = agrupar_noticias(embeddings, fechas=fechas, umbral=umbral)
 
     # 4. Limpiar eventos anteriores (reprocesar desde cero)
     db.query(EventoNoticia).delete()
