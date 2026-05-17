@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy.orm import Session
 from app.models.noticia import Noticia
 from app.models.evento import Evento, EventoNoticia
@@ -20,8 +22,15 @@ def procesar_eventos(db: Session, umbral: float = 0.55) -> dict:
     
     Retorna estadísticas del proceso.
     """
-    # 1. Leer noticias
-    noticias = db.query(Noticia).order_by(Noticia.fecha.desc()).all()
+# 1. Leer noticias (solo de los últimos 7 días)
+    from datetime import datetime, timedelta
+    fecha_limite = datetime.now() - timedelta(days=7)
+    noticias = (
+        db.query(Noticia)
+        .filter(Noticia.fecha >= fecha_limite)
+        .order_by(Noticia.fecha.desc())
+        .all()
+    )
     if not noticias:
         return {"mensaje": "No hay noticias para procesar", "eventos_creados": 0}
 
